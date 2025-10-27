@@ -68,8 +68,8 @@
 #define USE_SABERTOOTH_PACKET_SERIAL
 //#define USE_CYTRON_PACKET_SERIAL
 //#define USE_MP3_TRIGGER
-//#define USE_DFMINI_PLAYER
-#define USE_HCR_VOCALIZER
+#define USE_DFMINI_PLAYER
+//#define USE_HCR_VOCALIZER
 
 //For Speed Setting (Normal): set this to whatever speeds works for you. 0-stop, 127-full speed.
 #define DEFAULT_DRIVE_SPEED_NORMAL          70
@@ -380,50 +380,50 @@ MarcduinoButtonAction var(#var,act);
 // CONFIGURE: The FOOT Navigation Controller Buttons
 //----------------------------------------------------
 
-MARCDUINO_ACTION(btnUP_MD, "#12")
-MARCDUINO_ACTION(btnLeft_MD, "#13")
-MARCDUINO_ACTION(btnRight_MD, "#14")
-MARCDUINO_ACTION(btnDown_MD, "#11")
-MARCDUINO_ACTION(btnUP_CROSS_MD, "#26")
-MARCDUINO_ACTION(btnLeft_CROSS_MD, "#23")
-MARCDUINO_ACTION(btnRight_CROSS_MD, "#24")
-MARCDUINO_ACTION(btnDown_CROSS_MD, "#27")
-MARCDUINO_ACTION(btnUP_CIRCLE_MD, "#2")
-MARCDUINO_ACTION(btnLeft_CIRCLE_MD, "#4")
-MARCDUINO_ACTION(btnRight_CIRCLE_MD, "#7")
-MARCDUINO_ACTION(btnDown_CIRCLE_MD, "#10")
-MARCDUINO_ACTION(btnUP_PS_MD, "$71,LD=5")
-MARCDUINO_ACTION(btnLeft_PS_MD, "$81,LD=1")
-MARCDUINO_ACTION(btnRight_PS_MD, "$83,LD=1")
-MARCDUINO_ACTION(btnDown_PS_MD, "$82,LD=1")
-MARCDUINO_ACTION(btnUP_L1_MD, "#8")
-MARCDUINO_ACTION(btnLeft_L1_MD, "#3")
-MARCDUINO_ACTION(btnRight_L1_MD, "#5")
-MARCDUINO_ACTION(btnDown_L1_MD, "#9")
+MARCDUINO_ACTION(btnUP_MD, ":SE02,BM:SE02")           // Arrow Up
+MARCDUINO_ACTION(btnLeft_MD, ":SE16")                 // Arrow Left
+MARCDUINO_ACTION(btnRight_MD, ":SE01")                // Arrow Right
+MARCDUINO_ACTION(btnDown_MD, ":SE51")                 // Arrow Down
+MARCDUINO_ACTION(btnUP_CROSS_MD, "#26")               // Arrow UP + CROSS
+MARCDUINO_ACTION(btnLeft_CROSS_MD, "@*ON00")          // Arrow Left + CROSS
+MARCDUINO_ACTION(btnRight_CROSS_MD, "@*OF00")         // Arrow Right + CROSS
+MARCDUINO_ACTION(btnDown_CROSS_MD, "#27")             // Arrow Down + CROSS
+MARCDUINO_ACTION(btnUP_CIRCLE_MD, ":SE06,BM:SE06")    // Arrow UP + CIRCLE
+MARCDUINO_ACTION(btnLeft_CIRCLE_MD, ":SE03")          // Arrow Left + CIRCLE
+MARCDUINO_ACTION(btnRight_CIRCLE_MD, ":SE06")         // Arrow Right + CIRCLE
+MARCDUINO_ACTION(btnDown_CIRCLE_MD, ":SE09")          // Arrow Down + CIRCLE
+MARCDUINO_ACTION(btnUP_PS_MD, "$71,LD=5")             // Arrow UP + PS
+MARCDUINO_ACTION(btnLeft_PS_MD, "$81,LD=1")           // Arrow Left + PS
+MARCDUINO_ACTION(btnRight_PS_MD, "$83,LD=1")          // Arrow Right + PS
+MARCDUINO_ACTION(btnDown_PS_MD, "$82,LD=1")           // Arrow Down + PS
+MARCDUINO_ACTION(btnUP_L1_MD, "BM:SE31")              // Arrow UP + L1
+MARCDUINO_ACTION(btnLeft_L1_MD, "BM:SE33")            // Arrow Left + L1
+MARCDUINO_ACTION(btnRight_L1_MD, "BM:SE34")           // Arrow Right + L1
+MARCDUINO_ACTION(btnDown_L1_MD, "BM:SE30")            // Arrow Down + L1
 
 //----------------------------------------------------
 // CONFIGURE: The DOME Navigation Controller Buttons
 //----------------------------------------------------
-MARCDUINO_ACTION(FTbtnUP_MD, "#58")             // Arrow Up
-MARCDUINO_ACTION(FTbtnLeft_MD, "#56")           // Arrow Left
-MARCDUINO_ACTION(FTbtnRight_MD, "#57")          // Arrow Right
-MARCDUINO_ACTION(FTbtnDown_MD, "#59")           // Arrow Down
-MARCDUINO_ACTION(FTbtnUP_CROSS_MD, "#28")       // Arrow UP + CROSS
-MARCDUINO_ACTION(FTbtnLeft_CROSS_MD, "#33")     // Arrow Left + CROSS
-MARCDUINO_ACTION(FTbtnRight_CROSS_MD, "#30")    // Arrow Right + CROSS
-MARCDUINO_ACTION(FTbtnDown_CROSS_MD, "#29")     // Arrow Down + CROSS
-MARCDUINO_ACTION(FTbtnUP_CIRCLE_MD, "#22")      // Arrow Up + CIRCLE
-MARCDUINO_ACTION(FTbtnLeft_CIRCLE_MD, "#23")    // Arrow Left + CIRCLE
-MARCDUINO_ACTION(FTbtnRight_CIRCLE_MD, "#24")   // Arrow Right + CIRCLE
-MARCDUINO_ACTION(FTbtnDown_CIRCLE_MD, "#25")    // Arrow Down + CIRCLE
-MARCDUINO_ACTION(FTbtnUP_PS_MD, "#38")          // Arrow UP + PS
-MARCDUINO_ACTION(FTbtnLeft_PS_MD, "#40")        // Arrow Left + PS
-MARCDUINO_ACTION(FTbtnRight_PS_MD, "#41")       // Arrow Right + PS
-MARCDUINO_ACTION(FTbtnDown_PS_MD, "#39")        // Arrow Down + PS
-MARCDUINO_ACTION(FTbtnUP_L1_MD, "#34")          // Arrow UP + L1
-MARCDUINO_ACTION(FTbtnLeft_L1_MD, "#36")        // Arrow Left + L1
-MARCDUINO_ACTION(FTbtnRight_L1_MD, "#37")       // Arrow Right + L1
-MARCDUINO_ACTION(FTbtnDown_L1_MD, "#35")        // Arrow Down + L1
+MARCDUINO_ACTION(FTbtnUP_MD, ":SE11")                 // Arrow Up
+MARCDUINO_ACTION(FTbtnLeft_MD, ":SE13")               // Arrow Left
+MARCDUINO_ACTION(FTbtnRight_MD, ":SE14,@*ON00")       // Arrow Right
+MARCDUINO_ACTION(FTbtnDown_MD, ":SE10,@*OF00")        // Arrow Down
+MARCDUINO_ACTION(FTbtnUP_CROSS_MD, "#28")             // Arrow UP + CROSS
+MARCDUINO_ACTION(FTbtnLeft_CROSS_MD, ":SE58")         // Arrow Left + CROSS
+MARCDUINO_ACTION(FTbtnRight_CROSS_MD, ":SE07,$81")    // Arrow Right + CROSS
+MARCDUINO_ACTION(FTbtnDown_CROSS_MD, "#29")           // Arrow Down + CROSS
+MARCDUINO_ACTION(FTbtnUP_CIRCLE_MD, "*RD00")          // Arrow Up + CIRCLE
+MARCDUINO_ACTION(FTbtnLeft_CIRCLE_MD, "@*ON00")       // Arrow Left + CIRCLE
+MARCDUINO_ACTION(FTbtnRight_CIRCLE_MD, "@*OF00")      // Arrow Right + CIRCLE
+MARCDUINO_ACTION(FTbtnDown_CIRCLE_MD, "#25")          // Arrow Down + CIRCLE
+MARCDUINO_ACTION(FTbtnUP_PS_MD, "#38")                // Arrow UP + PS
+MARCDUINO_ACTION(FTbtnLeft_PS_MD, "#40")              // Arrow Left + PS
+MARCDUINO_ACTION(FTbtnRight_PS_MD, "#41")             // Arrow Right + PS
+MARCDUINO_ACTION(FTbtnDown_PS_MD, "#39")              // Arrow Down + PS
+MARCDUINO_ACTION(FTbtnUP_L1_MD, ":SE10")              // Arrow UP + L1
+MARCDUINO_ACTION(FTbtnLeft_L1_MD, ":SE02")            // Arrow Left + L1
+MARCDUINO_ACTION(FTbtnRight_L1_MD, ":SE04")           // Arrow Right + L1
+MARCDUINO_ACTION(FTbtnDown_L1_MD, ":SE08")            // Arrow Down + L1
 
 // ---------------------------------------------------------------------------------------
 //               SYSTEM VARIABLES - USER CONFIG SECTION COMPLETED
