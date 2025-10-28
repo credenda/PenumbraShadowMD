@@ -316,27 +316,21 @@ public:
 
     void reset()
     {
-        preferences.remove(fName);
+        String key = getStorageKey();
+        preferences.remove(key.c_str());
     }
 
     void setAction(String newAction)
     {
-        if (strlen(fName) > 15)
-        {
-            String key = fName;
-            key = key.substring(0, 15);
-            preferences.putString(key.c_str(), newAction);
-        }
-        else
-        {
-            preferences.putString(fName, newAction);
-        }
+        String key = getStorageKey();
+        preferences.putString(key.c_str(), newAction);
     }
 
     void trigger()
     {
-        SHADOW_VERBOSE("TRIGGER: %s\n", fName);
-        handleMarcduinoAction(action().c_str());
+        String actionStr = action();
+        SHADOW_VERBOSE("TRIGGER: %s: '%s'\n", fName, actionStr.c_str());
+        handleMarcduinoAction(actionStr.c_str());
     }
 
     String name()
@@ -346,19 +340,43 @@ public:
 
     String action()
     {
-        if (strlen(fName) > 15)
+        String key = getStorageKey();
+        
+        // Check if key exists first to avoid NVS error messages
+        if (preferences.isKey(key.c_str()))
         {
-            String key = fName;
-            key = key.substring(0, 15);
-            return preferences.getString(key.c_str(), fDefaultAction);
+            String result = preferences.getString(key.c_str(), "");
+            return result;
         }
-        return preferences.getString(fName, fDefaultAction);
+        else
+        {
+            // Key doesn't exist, use default
+            return fDefaultAction;
+        }
     }
 
 private:
     MarcduinoButtonAction* fNext;
     const char* fName;
     const char* fDefaultAction;
+
+    String getStorageKey()
+    {
+        String key = fName;
+        // NVS keys have stricter limits - let's be more conservative
+        if (key.length() > 12)
+        {
+            // Create a shorter, more reliable key
+            uint32_t hash = 0;
+            for (char c : key)
+            {
+                hash = hash * 31 + c;
+            }
+            // Use first 8 chars + 4-char hex hash
+            key = key.substring(0, 8) + String(hash % 65536, HEX);
+        }
+        return key;
+    }
 
     static MarcduinoButtonAction** head()
     {
@@ -380,50 +398,50 @@ MarcduinoButtonAction var(#var,act);
 // CONFIGURE: The FOOT Navigation Controller Buttons
 //----------------------------------------------------
 
-MARCDUINO_ACTION(btnUP_MD, ":SE02,BM:SE02")           // Arrow Up
-MARCDUINO_ACTION(btnLeft_MD, ":SE16")                 // Arrow Left
-MARCDUINO_ACTION(btnRight_MD, ":SE01")                // Arrow Right
-MARCDUINO_ACTION(btnDown_MD, ":SE51")                 // Arrow Down
-MARCDUINO_ACTION(btnUP_CROSS_MD, "#26")               // Arrow UP + CROSS
-MARCDUINO_ACTION(btnLeft_CROSS_MD, "@*ON00")          // Arrow Left + CROSS
-MARCDUINO_ACTION(btnRight_CROSS_MD, "@*OF00")         // Arrow Right + CROSS
-MARCDUINO_ACTION(btnDown_CROSS_MD, "#27")             // Arrow Down + CROSS
-MARCDUINO_ACTION(btnUP_CIRCLE_MD, ":SE06,BM:SE06")    // Arrow UP + CIRCLE
-MARCDUINO_ACTION(btnLeft_CIRCLE_MD, ":SE03")          // Arrow Left + CIRCLE
-MARCDUINO_ACTION(btnRight_CIRCLE_MD, ":SE06")         // Arrow Right + CIRCLE
-MARCDUINO_ACTION(btnDown_CIRCLE_MD, ":SE09")          // Arrow Down + CIRCLE
-MARCDUINO_ACTION(btnUP_PS_MD, "$71,LD=5")             // Arrow UP + PS
-MARCDUINO_ACTION(btnLeft_PS_MD, "$81,LD=1")           // Arrow Left + PS
-MARCDUINO_ACTION(btnRight_PS_MD, "$83,LD=1")          // Arrow Right + PS
-MARCDUINO_ACTION(btnDown_PS_MD, "$82,LD=1")           // Arrow Down + PS
-MARCDUINO_ACTION(btnUP_L1_MD, "BM:SE31")              // Arrow UP + L1
-MARCDUINO_ACTION(btnLeft_L1_MD, "BM:SE33")            // Arrow Left + L1
-MARCDUINO_ACTION(btnRight_L1_MD, "BM:SE34")           // Arrow Right + L1
-MARCDUINO_ACTION(btnDown_L1_MD, "BM:SE30")            // Arrow Down + L1
+MARCDUINO_ACTION(btnUP_MD, ":SE11")                  // Arrow Up
+MARCDUINO_ACTION(btnLeft_MD, ":SE13")                // Arrow Left
+MARCDUINO_ACTION(btnRight_MD, ":SE14,@*ON00")        // Arrow Right
+MARCDUINO_ACTION(btnDown_MD, ":SE10,@*OF00")         // Arrow Down
+MARCDUINO_ACTION(btnUP_CROSS_MD, "#28")              // Arrow UP + CROSS
+MARCDUINO_ACTION(btnLeft_CROSS_MD, ":SE58")          // Arrow Left + CROSS
+MARCDUINO_ACTION(btnRight_CROSS_MD, ":SE07,$81")     // Arrow Right + CROSS
+MARCDUINO_ACTION(btnDown_CROSS_MD, "#29")            // Arrow Down + CROSS
+MARCDUINO_ACTION(btnUP_CIRCLE_MD, "*RD00")           // Arrow UP + CIRCLE
+MARCDUINO_ACTION(btnLeft_CIRCLE_MD, ":SE06,BM:SE06") // Arrow Left + CIRCLE
+MARCDUINO_ACTION(btnRight_CIRCLE_MD, "@*OF00")       // Arrow Right + CIRCLE
+MARCDUINO_ACTION(btnDown_CIRCLE_MD, "#25")           // Arrow Down + CIRCLE
+MARCDUINO_ACTION(btnUP_PS_MD, "$71,LD=5")            // Arrow UP + PS
+MARCDUINO_ACTION(btnLeft_PS_MD, "$81,LD=1")          // Arrow Left + PS
+MARCDUINO_ACTION(btnRight_PS_MD, "$83,LD=1")         // Arrow Right + PS
+MARCDUINO_ACTION(btnDown_PS_MD, "$82,LD=1")          // Arrow Down + PS
+MARCDUINO_ACTION(btnUP_L1_MD, ":SE10")               // Arrow UP + L1
+MARCDUINO_ACTION(btnLeft_L1_MD, ":SE02")             // Arrow Left + L1
+MARCDUINO_ACTION(btnRight_L1_MD, ":SE04")            // Arrow Right + L1
+MARCDUINO_ACTION(btnDown_L1_MD, ":SE08")             // Arrow Down + L1
 
 //----------------------------------------------------
 // CONFIGURE: The DOME Navigation Controller Buttons
 //----------------------------------------------------
-MARCDUINO_ACTION(FTbtnUP_MD, ":SE11")                 // Arrow Up
-MARCDUINO_ACTION(FTbtnLeft_MD, ":SE13")               // Arrow Left
-MARCDUINO_ACTION(FTbtnRight_MD, ":SE14,@*ON00")       // Arrow Right
-MARCDUINO_ACTION(FTbtnDown_MD, ":SE10,@*OF00")        // Arrow Down
-MARCDUINO_ACTION(FTbtnUP_CROSS_MD, "#28")             // Arrow UP + CROSS
-MARCDUINO_ACTION(FTbtnLeft_CROSS_MD, ":SE58")         // Arrow Left + CROSS
-MARCDUINO_ACTION(FTbtnRight_CROSS_MD, ":SE07,$81")    // Arrow Right + CROSS
-MARCDUINO_ACTION(FTbtnDown_CROSS_MD, "#29")           // Arrow Down + CROSS
-MARCDUINO_ACTION(FTbtnUP_CIRCLE_MD, "*RD00")          // Arrow Up + CIRCLE
-MARCDUINO_ACTION(FTbtnLeft_CIRCLE_MD, "@*ON00")       // Arrow Left + CIRCLE
-MARCDUINO_ACTION(FTbtnRight_CIRCLE_MD, "@*OF00")      // Arrow Right + CIRCLE
-MARCDUINO_ACTION(FTbtnDown_CIRCLE_MD, "#25")          // Arrow Down + CIRCLE
-MARCDUINO_ACTION(FTbtnUP_PS_MD, "#38")                // Arrow UP + PS
-MARCDUINO_ACTION(FTbtnLeft_PS_MD, "#40")              // Arrow Left + PS
-MARCDUINO_ACTION(FTbtnRight_PS_MD, "#41")             // Arrow Right + PS
-MARCDUINO_ACTION(FTbtnDown_PS_MD, "#39")              // Arrow Down + PS
-MARCDUINO_ACTION(FTbtnUP_L1_MD, ":SE10")              // Arrow UP + L1
-MARCDUINO_ACTION(FTbtnLeft_L1_MD, ":SE02")            // Arrow Left + L1
-MARCDUINO_ACTION(FTbtnRight_L1_MD, ":SE04")           // Arrow Right + L1
-MARCDUINO_ACTION(FTbtnDown_L1_MD, ":SE08")            // Arrow Down + L1
+MARCDUINO_ACTION(FTbtnUP_MD, ":SE02,BM:SE02")         // Arrow Up
+MARCDUINO_ACTION(FTbtnLeft_MD, ":SE16")               // Arrow Left
+MARCDUINO_ACTION(FTbtnRight_MD, ":SE01")              // Arrow Right
+MARCDUINO_ACTION(FTbtnDown_MD, ":SE56")               // Arrow Down
+MARCDUINO_ACTION(FTbtnUP_CROSS_MD, "$+")              // Arrow UP + CROSS
+MARCDUINO_ACTION(FTbtnLeft_CROSS_MD, "@*ON00")        // Arrow Left + CROSS
+MARCDUINO_ACTION(FTbtnRight_CROSS_MD, "@*OF00")       // Arrow Right + CROSS
+MARCDUINO_ACTION(FTbtnDown_CROSS_MD, "$-")            // Arrow Down + CROSS
+MARCDUINO_ACTION(FTbtnUP_CIRCLE_MD, ":SE06,BM:SE06")  // Arrow Up + CIRCLE
+MARCDUINO_ACTION(FTbtnLeft_CIRCLE_MD, "@*ON00")        // Arrow Left + CIRCLE
+MARCDUINO_ACTION(FTbtnRight_CIRCLE_MD, "@*OF00")       // Arrow Right + CIRCLE
+MARCDUINO_ACTION(FTbtnDown_CIRCLE_MD, ":SE09")        // Arrow Down + CIRCLE
+MARCDUINO_ACTION(FTbtnUP_PS_MD, "$71,@0T10")          // Arrow UP + PS
+MARCDUINO_ACTION(FTbtnLeft_PS_MD, "$81,@0T1")         // Arrow Left + PS
+MARCDUINO_ACTION(FTbtnRight_PS_MD, "$83,@0T1")        // Arrow Right + PS
+MARCDUINO_ACTION(FTbtnDown_PS_MD, "$82,@0T1")         // Arrow Down + PS
+MARCDUINO_ACTION(FTbtnUP_L1_MD, ":BM:SE31")           // Arrow UP + L1
+MARCDUINO_ACTION(FTbtnLeft_L1_MD, "BM:SE33")          // Arrow Left + L1
+MARCDUINO_ACTION(FTbtnRight_L1_MD, "BM:SE34")         // Arrow Right + L1
+MARCDUINO_ACTION(FTbtnDown_L1_MD, "BM:SE30")          // Arrow Down + L1
 
 // ---------------------------------------------------------------------------------------
 //               SYSTEM VARIABLES - USER CONFIG SECTION COMPLETED
@@ -579,6 +597,7 @@ bool handleMarcduinoAction(const char* action)
     char buffer[1024];
     snprintf(buffer, sizeof(buffer), "%s", action);
     char* cmd = buffer;
+    
     if (*cmd == '#')
     {
         // Std Marcduino Function Call Configured
@@ -611,8 +630,44 @@ bool handleMarcduinoAction(const char* action)
     }
     for (;;)
     {
+        if (*cmd == '\0')
+            break;
         char buf[100];
-        if (*cmd == '"')
+        
+        // Handle direct MarcDuino commands (not quoted)
+        // Check conditions without modifying cmd pointer
+        bool isMarcCommand = (*cmd == ':');
+        bool isBodyMarcCommand = (strlen(cmd) >= 3 && cmd[0] == 'B' && cmd[1] == 'M' && cmd[2] == ':');
+        bool isSpecialCommand = (*cmd == '@');
+        
+        if (isMarcCommand || isBodyMarcCommand || isSpecialCommand)
+        {
+            char* marcCommand = cmd;
+            char* nextCmd = strchr(cmd, ',');
+            if (nextCmd != nullptr)
+            {
+                size_t len = nextCmd - marcCommand;
+                strncpy(buf, marcCommand, len);
+                buf[len] = '\0';
+                cmd = nextCmd + 1; // Skip the comma
+                marcCommand = buf;
+            }
+            else
+            {
+                cmd += strlen(marcCommand);
+            }
+            
+            // Route to appropriate controller
+            if (isBodyMarcCommand)
+            {
+                sendBodyMarcCommand(&marcCommand[2]); // Skip "BM" but keep the ":"
+            }
+            else
+            {
+                sendMarcCommand(marcCommand);
+            }
+        }
+        else if (*cmd == '"')
         {
             // Skip the quote
             cmd++;
@@ -623,7 +678,7 @@ bool handleMarcduinoAction(const char* action)
                 size_t len = nextCmd - marcCommand;
                 strncpy(buf, marcCommand, len);
                 buf[len] = '\0';
-                cmd = nextCmd;
+                cmd = nextCmd + 1; // Skip the comma
                 marcCommand = buf;
             }
             else
@@ -649,7 +704,7 @@ bool handleMarcduinoAction(const char* action)
                 size_t len = nextCmd - mp3Cmd;
                 strncpy(buf, mp3Cmd, len);
                 buf[len] = '\0';
-                cmd = nextCmd;
+                cmd = nextCmd + 1; // Skip the comma
                 mp3Cmd = buf;
             }
             else
@@ -668,7 +723,7 @@ bool handleMarcduinoAction(const char* action)
                 buf[0] = '$';
                 strncpy(&buf[1], mp3Cmd, len);
                 buf[len+1] = '\0';
-                cmd = nextCmd;
+                cmd = nextCmd + 1; // Skip the comma
                 mp3Cmd = buf;
             }
             else
@@ -820,9 +875,8 @@ bool handleMarcduinoAction(const char* action)
                 return false;
             }
         }
-        if (*cmd != ',')
+        if (*cmd == '\0')
             break;
-        cmd++;
     }
     if (*cmd != '\0')
     {
@@ -847,7 +901,7 @@ bool handleMarcduinoAction(const char* action)
 #define MARC_SOUND_RANDOM_MIN           1000    // Min wait until random sound
 #define MARC_SOUND_RANDOM_MAX           10000   // Max wait until random sound
 #define MARC_SOUND_STARTUP              255     // Startup sound
-#define MARC_SOUND_PLAYER               MarcSound::kHCR
+#define MARC_SOUND_PLAYER               MarcSound::kDFMini
 #include "MarcduinoSound.h"
 #define MARC_SOUND
 #endif
@@ -993,7 +1047,6 @@ void loop()
     if (Serial.available())
     {
         int ch = Serial.read();
-        MD_SERIAL.print((char)ch);
         if (ch == 0x0A || ch == 0x0D)
         {
             char* cmd = sBuffer;
@@ -1386,7 +1439,18 @@ void loop()
             }
             else
             {
-                printf("Unknown: %s\n", sBuffer);
+                // Check if this is a MarcDuino command
+                if (startswith(cmd, "BM:") || startswith(cmd, ":") || startswith(cmd, "@") || startswith(cmd, "$") || startswith(cmd, "MP3="))
+                {
+                    SHADOW_VERBOSE("SERIAL MARC CMD: %s\n", cmd);
+                    handleMarcduinoAction(cmd);
+                }
+                else
+                {
+                    // Pass unknown commands directly to dome MarcDuino
+                    SHADOW_VERBOSE("SERIAL DIRECT: %s\n", cmd);
+                    MD_SERIAL.print(cmd); MD_SERIAL.print("\r");
+                }
             }
             sPos = 0;
         }

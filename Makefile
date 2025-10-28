@@ -1,12 +1,11 @@
 TARGET?=ESP32
-PORT?=/dev/ttyUSB0
+PORT?=/dev/cu.usbserial-210
 #ESP32_FILESYSTEM=littlefs
 #ESP32_PSRAM=enabled
 ESP32_FILESYSTEM=spiffs
 ESP32_FILESYSTEM_PART=spiffs
 ESP32_PARTSCHEME=min_spiffs
 ESP32_FLASHSIZE=16MB
-ESP32_DEBUGLEVEL=verbose
 GITHUB_REPOS= \
 reeltwo/Reeltwo \
 rimim/espsoftwareserial \
